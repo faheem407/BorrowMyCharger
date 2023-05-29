@@ -1,0 +1,115 @@
+<?php require('template/header.phtml') ?>
+<link rel="stylesheet" href="css/nouislider.css">
+
+<div class="container position-relative overflow-auto">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-start" id="pagination">
+            <li class="page-item"><button type="button" class="page-link" id="start_page" data-page="1">
+                    << </button>
+            </li>
+            <li class="page-item"><button type="button" class="page-link disabled" id="previous" data-page="1">
+                    < </button>
+            </li>
+            <li class="page-item"><button type="button" class="page-link active page-number" data-page="1">1</button></li>
+            <li class="page-item"><button type="button" class="page-link page-number" data-page="2">2</button></li>
+            <li class="page-item"><button type="button" class="page-link page-number" data-page="3">3</button></li>
+            <li class="page-item"><button type="button" class="page-link page-number" data-page="4">4</button></li>
+            <li class="page-item"><button type="button" class="page-link page-number" data-page="5">5</button></li>
+            <li class="page-item"><button type="button" class="page-link" id="next" data-page="2"> > </button></li>
+            <li class="page-item"><button type="button" class="page-link" id="end_page" data-page="<?php echo $view->max_pages; ?>"> >> </button></li>
+        </ul>
+        <div class="d-flex align-items-center justify-content-between position-relative">
+            <div class="row w-100">
+                <div class="col-12 col-md-6 p-1">
+                    <div class="input-group flex-grow-1">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="search-text" placeholder="Search by Address & Postcode" aria-label="Search by Address and post code" aria-describedby="button-search-text">
+                            <label for="search-text">Search</label>
+                        </div>
+                        <button class="btn btn-outline-primary" type="button" id="button-search-text" name="search">Search</button>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 p-1">
+                    <div class="form-floating">
+                        <select class="form-select" id="sort-by" aria-label="Sort By">
+                            <option value="fullname" selected>Full Name</option>
+                            <option value="cost">Cost</option>
+                        </select>
+                        <label for="sort-by">Sort By</label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 p-1">
+                    <div class="form-floating">
+                        <select class="form-select" id="sort-order" aria-label="Sorting Order">
+                            <option value="ASC" selected>Ascending</option>
+                            <option value="DESC">Descending</option>
+                        </select>
+                        <label for="sort-order">Sorting Order</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="my-3 d-flex">
+            <h5 class="d-flex align-items-center justify-content-center"><span>Cost</span></h5>
+            <div id="cost-slider" class="mx-5 my-3 flex-grow-1"></div>
+        </div>
+    </nav>
+    <table class="table table-primary border border-3 rounded-3 border-secondary shadow-lg table-striped table-bordered w-100">
+        <thead>
+            <tr>
+                <th scope="col">Full Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Email</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <?php
+            foreach ($view->data as $row) {
+                echo '<tr><th scope="row">' . $row->fullname . '</th><td>' . $row->address . '</td><td>' . $row->phone . '</td><td>' . $row->email . '</td><td>' . $row->cost . '<td class="text-center"><button role="button" class="btn btn-primary" title="Send EMail" data-email="' . $row->email . '" data-fullname="' . $row->fullname . '" data-bs-target="#emailModal" data-bs-toggle="modal"><i class="bi bi-envelope-at"></i></button></td></tr>';
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="emailModalLabel">Send Email to <span id="cp-owner-name"></span></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                <div class="modal-body">
+                    <input type="email" hidden name="owner_email" id="owner-email">
+                    <div class="mb-3">
+                        <label for="request-datetime" class="form-label">Date and Time</label>
+                        <input type="datetime-local" class="form-control" name="datetime" id="request-datetime" aria-describedby="datetimeHelp" required aria-required="true">
+                        <div id="datetimeHelp" class="form-text">Select Date and time of charging</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Duration</label>
+                        <input type="number" step="1" min="0" class="form-control" name="duration" id="duration" aria-describedby="durationHelp">
+                        <div id="durationHelp" class="form-text">Specify duration of charging in minutes</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check-label" for="units">Units to consume</label>
+                        <input type="number" step="0.01" class="form-control" name="units" id="units" aria-describedby="unitsHelp">
+                        <div id="unitsHelp" class="form-text">Specify units in kWh</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" title="Send Email" name="submit"><i class="bi bi-send-check"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/nouislider.min.js"></script>
+<script src="js/index.js"></script>
+<?php require('template/footer.phtml') ?>

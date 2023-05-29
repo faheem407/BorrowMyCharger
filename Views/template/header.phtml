@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="css/bootstrap-icons.css">
+
+    <title>Borrow my Charger | <?php echo $view->pageTitle; ?></title>
+</head>
+
+<body role="document" class="container-md position-relative">
+    <div class="main bg-body-secondary h-100 min-vh-100 d-flex flex-column">
+        <nav class="navbar navbar-transparent">
+            <div class="container-fluid">
+                <a class="navbar-brand fs-2" href="home.php">Borrow My Charger</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end text-bg-light" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu</h5>
+                        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="home.php">Home</a>
+                            </li>
+                            <?php require_once('Models/UserDataSet.php');
+                            $userDataSet = new UserDataSet();
+                            $user_verified = isset($_COOKIE['token']) && $userDataSet->verifyAuthToken($_COOKIE['token']);
+                            if ($user_verified) {
+                                echo '<li class="nav-item"><a class="nav-link" href="map.php">Map</a></li>
+                                <li class="nav-item"><a class="nav-link" href="profile.php">Profile & Charge Point</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>';
+                            } else {
+                                echo '<li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="signup.php">Register</a></li>';
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-start">
+            <?php if (isset($view->success)) {
+                echo '<div class="toast align-items-center text-bg-success border-0 show position-absolute left-0 top-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        Error: ' . $view->success . '
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <script>
+    setTimeout(function() {
+        let elem = document.getElementsByClassName("toast")[0];
+        elem.parentNode.removeChild(elem);
+    }, 5000);
+  </script>';
+            }
+            if (isset($view->error)) {
+                echo '<div class="toast align-items-center text-bg-danger border-0 show position-absolute left-0 top-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        Error: ' . $view->error . '
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+  
+  <script>
+    setTimeout(function() {
+        let elem = document.getElementsByClassName("toast")[0];
+        elem.parentNode.removeChild(elem);
+    }, 5000);
+  </script>';
+            } ?>

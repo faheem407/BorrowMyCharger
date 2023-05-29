@@ -1,0 +1,47 @@
+<?php require_once('template/header.phtml'); ?>
+<div class="container position-relative">
+    <div class="row mx-0 px-2 py-3 rounded bg-white">
+        <div class="col-6 position-relative">
+            <div class="z-1 text-white position-absolute start-50 top-50 translate-middle text-center">
+                <h1>SignUp</h1>
+                <span>Already have an account? <a href="login.php" class="fw-bolder text-white">Log In!</a></span>
+            </div>
+            <div class="bg-img position-absolute start-0 top-0 z-0 w-100 h-100">
+                <img class="w-100 h-100 rounded" src="images/geometric-cave.webp" alt="">
+            </div>
+        </div>
+        <div class="col-6">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullname" name="fullname" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" name="phone" aria-describedby="phoneHelp">
+                    <div id="phoneHelp" class="form-text">Upto 11 digit phone number</div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required aria-required="true">
+                </div>
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="profile_picture">Profile Picture</label>
+                    <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-primary" name="signUp">Sign Up</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="js/validator.js"></script>
+<?php require_once('template/footer.phtml'); ?>

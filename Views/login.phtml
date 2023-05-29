@@ -1,0 +1,31 @@
+<?php require_once('template/header.phtml'); ?>
+
+<div class="container position-relative">
+    <div class="row mx-0 bg-white px-2 py-3 rounded">
+        <div class="col-6 position-relative">
+            <div class="z-1 text-white position-absolute start-50 top-50 translate-middle text-center">
+                <h1>Login</h1>
+                <span>Not registered yet? <a href="signup.php" class="fw-bolder text-white">Sign Up!</a></span>
+            </div>
+            <div class="bg-img position-absolute start-0 top-0 z-0 w-100 h-100">
+                <img class="w-100 h-100 rounded" src="images/geometric-cave.webp" alt="">
+            </div>
+        </div>
+        <div class="col-6">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required aria-required="true">
+                </div>
+                <button type="submit" class="btn btn-primary" name="login">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<?php require_once('template/footer.phtml'); ?>

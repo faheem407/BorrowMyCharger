@@ -1,0 +1,90 @@
+<?php require('template/header.phtml') ?>
+
+<div id="map-container" class="p-2 rounded position-relative flex-grow-1 w-100 d-flex flex-column">
+    <div id="map" class="w-100 h-100 rounded-3 shadow-lg border border-3 border-secondary flex-grow-1"></div>
+</div>
+
+<script async src="https://maps.googleapis.com/maps/api/js?key=<?php require_once('Models/Env.php');
+                                                                $env = Environment::load_env();
+                                                                echo $env->get_env('GOOGLE_MAPS_API'); ?>&callback=initMap"></script>
+<?php require('template/footer.phtml') ?>
+<script>
+    var map;
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+    };
+
+    function success(pos) {
+        const crd = pos.coords;
+
+        map.setCenter(new google.maps.LatLng(crd.latitude, crd.longitude));
+    }
+
+    function error(err) {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+    }
+
+    const contentString =
+        `<div class=""d-flex align-items-center justify-content-center w-100 h-100">
+            <div class="text-center">
+                <img class="rounded-circle" src="images/{{img_url}}" width="50" height="50" />
+            </div>
+            <div class="flex-grow-1 text-center">
+                <h1>{{fullname}}</h1>
+                <p class="text-muted text-muted text-center"><a href="mailto:{{email}}">{{email}}</a> | <a href="tel:{{phone}}">{{phone}}</a></p>
+                <p class="text-muted text-muted text-center">{{address}}</p>
+                <h6>&#163;{{cost}} per kWh</h6>
+            </div>
+        </div>`;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: {
+                lat: -34.397,
+                lng: 150.644
+            },
+            zoom: 8,
+        });
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+        let mapData = <?php
+                        if (isset($view->chargePoints)) {
+                            echo json_encode($view->chargePoints);
+                        } else {
+                            echo 'null';
+                        }
+                        ?>;
+        if (mapData && mapData.length) {
+            mapData.forEach(chargePoint => {
+                const pos = new google.maps.LatLng(chargePoint.lat, chargePoint.lng);
+                const marker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    title: chargePoint.fullname
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: contentString.replace('{{fullname}}', chargePoint.fullname)
+                    .replace('{{address}}', chargePoint.address)
+                    .replace('{{cost}}', chargePoint.cost)
+                    .replaceAll('{{phone}}', chargePoint.phone)
+                    .replaceAll('{{email}}', chargePoint.email)
+                    .replace('{{img_url}}', chargePoint.img_url),
+                    ariaLabel: 'Charge Point Details for ' + chargePoint.fullname
+                });
+
+                marker.addListener('click', () => {
+                    infoWindow.open({
+                        anchor: marker,
+                        map: map
+                    })
+                });
+            });
+        }
+    }
+
+    window.initMap = initMap;
+</script>
